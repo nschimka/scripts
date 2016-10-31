@@ -2,83 +2,81 @@
 #Creates a backup of a user's home directory
 
 #Change these to get it to work for you, or select the option to input your own info
-BACKUP_LOC=/home/student/Desktop
+BACKUP_LOC=/home/student/Videos
 SAVE_LOC=/home/student/backups
 COMPRESSION=bzip2       #supports bzip2, xz, gzip
-ARCHIVE_NAME=student-backup
+ARCHIVE_NAME=student
 
 function back_up {
-    read -p "If you’d like to manually enter backup information, type yes; else type no: " OP
-    if [ "$OP" = "y" ] || [ "$OP" = "yes" ]; then
-        user_input
-        fi
-    while [ "$OP" != "y" ] && [ "$OP" != "yes" ] && [ "$OP" != "n" ] && [ "$OP" != "no" ]; do
+        read -p "If you’d like to manually enter backup information, type yes; else type no: " OP
+        if [ "$OP" = "y" ] || [ "$OP" = "yes" ]; then
+                user_input
+                fi
+        while [ "$OP" != "y" ] && [ "$OP" != "yes" ] && [ "$OP" != "n" ] && [ "$OP" != "no" ]; do
+                echo
+                read -p "Please enter yes or no to continue: " OP
+                done
+        error_check
+    
+        if [ "$COMPRESSION" = "gzip" ]; then
+                ARCHIVE_COMMAND="z"
+                fi
+        if [ "$COMPRESSION" = "bzip2" ]; then
+                ARCHIVE_COMMAND="j"
+                fi
+        if [ "$COMPRESSION" = "xz" ]; then
+                ARCHIVE_COMMAND="J"
+                fi
+
+        ARCHIVE=$ARCHIVE_NAME-$(date +%F)
         echo
-        read -p "Please enter yes or no to continue: " OP
-        done
-    error_check
+        echo backing up $BACKUP_LOC in $SAVE_LOC as $ARCHIVE with $COMPRESSION...
 
-    if [ "$COMPRESSION" = "gzip" ]; then
-        ARCHIVE_COMMAND="z"
-        fi
-    if [ "$COMPRESSION" = "bzip2" ]; then
-        ARCHIVE_COMMAND="j"
-        fi
-    if [ "$COMPRESSION" = "xz" ]; then
-        ARCHIVE_COMMAND="J"
-        fi
-
-    ARCHIVE=$ARCHIVE_NAME-$(date +%F)
-    mkdir $SAVE_LOC 2> /dev/null
-    echo
-    echo backing up $BACKUP_LOV in $SAVE_LOC as $ARCHIVE with $COMPRESSION...
-
-    cd $SAVE_LOC
-    tar cf$ARCHIVE_COMMAND $ARCHIVE $BACKUP_LOC #&> /dev/null
-    tar xf$ARCHIVE_COMMAND $ARCHIVE #&> /dev/null
-    rm $ARCHIVE #&> /dev/null
-    echo done!
+        cd $SAVE_LOC
+        tar cf$ARCHIVE_COMMAND $ARCHIVE $BACKUP_LOC #&> /dev/null
+        tar xf$ARCHIVE_COMMAND $ARCHIVE #&> /dev/null
+        rm $ARCHIVE #&> /dev/null
+        echo done!
 }
 
 function user_input {
-    read -p "Enter the location/file you want to back up: " BACKUP_LOC
-    read -p "Enter where you’d like it to be saved: " SAVE_LOC
-    read -p "Enter the compression type (bzip2, xz, gzip): " COMPRESSION
-    read -p "Enter what you’d like to name the backup directory: " ARCHIVE_NAME
+        read -p "Enter the location/file you want to back up: " BACKUP_LOC
+        read -p "Enter where you’d like it to be saved: " SAVE_LOC
+        read -p "Enter the compression type (bzip2, xz, gzip): " COMPRESSION
+        read -p "Enter what you’d like to name the archive: " ARCHIVE_NAME
 }
 
 function error_check {
-    while [ ! -d "$BACKUP_LOC" ]; do
-        echo  
-        echo Error: backup location does not exist    
-        read -p "Please enter a backup location: " BACKUP_LOC
-        done
-    while [ -z "$BACKUP_LOC" ]; do
         echo
-        echo Error: no backup location given.
-        read -p "Please enter a backup location: " BACKUP_LOC
-        done
-    if [ ! -d "$SAVE_LOC" ]; then
-        echo
-        echo Error: save location does not exist
-        read -p "Would you like to create it? " CREATE_DIR
-        read -p "Please enter a location to save your backup: " SAVE_LOC
-        fi
-    while [ -z "$SAVE_LOC" ]; do
-        echo
-        echo Error: no save location given
-        read -p "Please enter a location to save your backup: " SAVE_LOC
-        done
-    while [ "$COMPRESSION" != "gzip" ] && [ "$COMPRESSION" != "bzip2" ] && [ "$COMPRESSION" != "xz" ]; do
-        echo
-        echo Error: must use gzip, bzip2, or xz.
-        read -p "Please enter a valid compression type: " COMPRESSION
-        done
-    while [ -z "$ARCHIVE_NAME" ]; do
-        echo
-        echo Error: must give an archive name.
-        read -p "Please enter an archive name: " ARCHIVE_NAME
-        done
+        while [ ! -d "$BACKUP_LOC" ]; do
+                echo Error: backup location does not exist
+                read -p "Please enter a backup location: " BACKUP_LOC
+                done
+        while [ -z "$BACKUP_LOC" ]; do
+                echo Error: no backup location given.
+                read -p "Please enter a backup location: " BACKUP_LOC
+                done
+        if [ ! -d "$SAVE_LOC" ]; then
+                echo Creating $SAVE_LOC ...
+                mkdir $SAVE_LOC 2> direrror.txt
+                while [ -s direrror.txt ]; do
+                        read -p "Error, cannot make directory. Enter another location: " SAVE_LOC
+                        mkdir $SAVE_LOC 2> direrror.txt
+                        done
+                rm direrror.txt 2> /dev/null
+                fi
+        while [ -z "$SAVE_LOC" ]; do
+                echo Error: no save location given
+                read -p "Please enter a location to save your backup: " SAVE_LOC
+                done
+        while [ "$COMPRESSION" != "gzip" ] && [ "$COMPRESSION" != "bzip2" ] && [ "$COMPRESSION" != "xz" ]; do
+                echo Error: must use gzip, bzip2, or xz.
+                read -p "Please enter a valid compression type: " COMPRESSION
+                done
+        while [ -z "$ARCHIVE_NAME" ]; do
+                echo Error: must give an archive name.
+                read -p "Please enter an archive name: " ARCHIVE_NAME
+                done
 }
 
 back_up
