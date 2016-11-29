@@ -8,7 +8,7 @@
 # SYNOPSIS
 #     so_fetchgrade (--help)
 #
-#     This script only works on desktopX.example.com.
+#     This script only works on desktopX.example.com.F
 #
 # DESCRIPTION
 #     This script, based on singular argument, either does setup or
@@ -748,23 +748,16 @@ function grade_users {
     fi  
   done
 
-  for USER in Regina Gretchen Karen Cady Damian Janis MsNorbury; do
-	PRIMARYGROUP=$(id -g $USER)
-	grep $USER /etc/passwd | grep "$USER:x:.*:$PRIMARYGROUP:" &>/dev/null
-	if [ "${RESULT}" -ne 0 ]; then
-	   print_FAIL
-	   echo " - The user $USER is not in the primary group $USER."
-	fi
-  done
+  if ! primary_group 'Regina:' 'Regina' ||
+  ! primary_group 'Gretchen:' 'Gretchen' ||
+  ! primary_group 'Karen:' 'Karen' ||
+  ! primary_group 'Cady:' 'Cady' ||
+  ! primary_group 'Damian:' 'Damian' ||
+  ! primary_group 'Janis:' 'Janis' ||
+  ! primary_group 'Authority:' 'MrDuvall'; then
+        return 1
+  fi
 
-  for USER in MrDuvall; do
-	PRIMARYGROUP='Authority'
-	grep $USER /etc/passwd | grep "$USER:x:.*:$PRIMARYGROUP:" &>/dev/null
-	if [ "${RESULT}" -ne 0 ]; then
-	   print_FAIL
-	   echo " - The user $USER is not in the primary group Authority."
-	fi
-  done
 
   if ! check_passwd 'Regina' 'socialsuicide' ||
   ! check_passwd 'Gretchen' 'socialsuicide' ||
@@ -812,6 +805,18 @@ EOF
 
   print_PASS
   return 0
+}
+
+#natasha - customized function to check for primary group membership
+function primary_group {
+        groupid=$(grep $1 /etc/group | awk -F ":" '{print $(NF-1)}')
+        primarygroupid=$(grep $2 /etc/passwd | awk -F ":" '{print $4}')
+        if ! [ "$groupid" = "$primarygroupid" ]; then
+            print_FAIL
+            groupname=$(echo $1 | sed "s/:/./")
+            echo " - The user $2 is not in the primary group $groupname"
+            return 1
+        fi
 }
 
 #natasha - consolidate group-existance checking
