@@ -1,0 +1,29 @@
+# Solution to a lab I wrote on while loops in Bash
+
+# The lab
+
+# Write a script that keeps asking you for a number between 1 and 10 until you guess it. 
+# To keep things simple, this number is an arbitrary value that you set in a variable. 
+# What kind of loop should you write?
+
+# Hint: you can use the break statement to get out of an endless loop.
+# Bonus: Give hints based on guesses on how close they are to the answer.
+# Additional Bonus: Go to http://www.tldp.org/LDP/abs/html/randomvar.html to find out how you can generate a pseudorandom number.
+
+# The solution
+
+#!/bin/bash 
+max=10 
+number=$((RANDOM%max)) 
+while true; do 
+  echo "guess a number between 0 and $max" 
+  read guess 
+  if [ "$guess" = "$number" ]; then 
+    echo "yay you got it!" 
+    break 
+  elif [ "$guess" -lt "$number" ]; then 
+    echo "your guess was too low" 
+  else 
+    echo "your guess was too high" 
+  fi 
+done
