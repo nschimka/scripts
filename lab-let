@@ -1,0 +1,42 @@
+# Solution to a lab I wrote on doing arithmetic with let in Bash
+
+# The lab
+
+# Ask for a number from the user and use it to calculate The Magic Number©. Here's how you calculate it:
+# 1) If it's an even number, add 50 to it. If it's an odd number, subtract 50 from it. 
+# Hint: you can use the modulo operator to determine if it's odd or even, described here: http://www.tldp.org/LDP/abs/html/ops.html
+# 2) If the number is less than 0, keep adding 8 to it until it's a positive number. Otherwise, multiply it by 1183
+# 3) Raise it to the 6th power
+# 4) Divide it by 327
+# 5) Pause the program for 10 seconds to make it seem like it's doing intense calculations
+# 6) Throw away all your previous calculations and set it equal to 42
+# 7) Print out that the answer to the ultimate question of life, the universe, and everything is The Magic Number©, 42. 
+# Print out the 42 using the variable name instead of 42.
+
+# The solution
+
+#!/bin/bash
+
+echo "Give me a number and I will calculate The Magic Number© from it"
+read number
+
+let isEven=number%2
+if [ "$isEven" -eq 0 ]; then
+        let number=number+50
+else
+        let number=number-50
+fi
+
+if [ "$number" -gt 0 ]; then
+        let number=number*1183
+else
+        while [ "$number" -lt 0 ]; do
+                let number=number+8
+        done
+fi
+
+let number=number**6
+let number=number/327
+sleep 10
+number=42
+echo "The answer to the ultimate question of life, the universe, and everything is The Magic Number©, $number"
