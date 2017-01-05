@@ -1,0 +1,14 @@
+# Solution to a lab I wrote on variables in Bash
+
+# The lab
+# Store the current date (in YYYY-MM-DD format) into a variable and print it out to the command line with a 
+# descriptive message, like “The current date is: .“ Count the number of files inside / and print that out 
+# with a descriptive message as well.
+
+# Solution
+
+#!/bin/bash 
+today=$(date +%F) 
+echo "Today's date is: " $today 
+num_files=$(ls / | wc -l) 
+echo "There are" $num_files "files inside /"
