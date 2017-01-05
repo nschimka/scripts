@@ -1,6 +1,6 @@
-# Solution to a lab I wrote on for loops in Bash
+# Solution to 2 labs I wrote on for loops in Bash
 
-# The lab
+# Lab 1
 
 # Write a script to simulate a rocket countdown by printing 10 to liftoff on the command line. 
 # What kind of loop should you write?
@@ -14,4 +14,19 @@ for i in {10..0}; do
   if [ "$i" -eq 0 ]; then 
     echo "liftoff!!!" 
   fi 
+done
+
+
+
+
+# Lab 2
+
+# Write a script that prints “hi” for every file inside /home/student/jediweapons. 
+# What kind of loop should you write?
+
+# The solution
+
+#!/bin/bash 
+for i in $( ls -a ); do 
+  echo "hi" 
 done
