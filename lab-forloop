@@ -1,0 +1,17 @@
+# Solution to a lab I wrote on for loops in Bash
+
+# The lab
+
+# Write a script to simulate a rocket countdown by printing 10 to liftoff on the command line. 
+# What kind of loop should you write?
+
+# The solution
+
+#!/bin/bash 
+for i in {10..0}; do 
+  echo $i 
+  sleep 1 
+  if [ "$i" -eq 0 ]; then 
+    echo "liftoff!!!" 
+  fi 
+done
