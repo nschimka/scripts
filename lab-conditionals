@@ -1,0 +1,32 @@
+# Solution for a (very silly) lab I wrote on conditionals in Bash.
+# The silliness is meant to emphasize that Bash relies on the same commands you'd run in the CLI
+
+# The lab
+
+# Declare a variable to represent what day it is. (Bonus: ask the user what day it is and store that in a variable). 
+# If today is Monday, create the user 'leia'; do not create a home directory for her and do not create a 'leia' group. 
+# If today is Wednesday, search in /usr/share/dict/words for the word "defenestration;" if it's not there, print out 
+# a message saying it's not there. If today is Thursday, create 20 files named saber1.jpg, saber2.jpg, etc. in the 
+# /home/student/jediweapons directory. Otherwise, update all software packages to the newest version.
+# Hint: You only need to create the directory if it doesn’t exist. Check here for more conditional expressions.
+# http://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html
+
+# Solution
+
+#!/bin/bash 
+echo "What day is it today?" 
+read today 
+if [ "$today" = "Monday" ]; then 
+  useradd -M -N leia 
+elif [ "$today" = "Wednesday" ]; then 
+  if ! grep 'defenestration' /usr/share/dict/words; then 
+    echo "defenestration is not in the dictionary" 
+  fi 
+elif [ "$today" = "Thursday" ]; then 
+  if [ ! -d /home/student/jediweapons ]; then 
+    mkdir /home/student/jediweapons 
+  fi 
+  touch /home/student/jediweapons/saber{1..20}.jpg 
+else 
+  yum update 
+fi
